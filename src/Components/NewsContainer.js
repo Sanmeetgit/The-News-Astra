@@ -26,34 +26,26 @@ export class NewsContainer extends Component {
         }
     }
 
-    // runs after render()
-    async componentDidMount() {
-        let url = `https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=${this.props.category}&apiKey=5a267e71ace440edbbaeb258a28fdee2&page=${this.state.page}&pageSize=${this.props.pageSize}`;
+    async updateNews(pageNo) {
+        let url = `https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=${this.props.category}&apiKey=5a267e71ace440edbbaeb258a28fdee2&page=${pageNo}&pageSize=${this.props.pageSize}`;
         this.setState({loading:true});
         let data = await fetch(url);
         let parsedData = await data.json();
         console.log(parsedData);
         this.setState({articles: parsedData.articles, totalResults: parsedData.totalResults, loading:false});
     }
+
+    // runs after render()
+    async componentDidMount() {
+        this.updateNews(this.state.page);
+    }
     onPrevBtnClick = async () => {
-        console.log('prev');
-        let url = `https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=${this.props.category}&apiKey=5a267e71ace440edbbaeb258a28fdee2&page=${this.state.page-1}&pageSize=${this.props.pageSize}`;
-        this.setState({loading:true});
-        let data = await fetch(url);
-        let parsedData = await data.json();
-        console.log(parsedData);
-        this.setState({articles: parsedData.articles, totalResults: parsedData.totalResults, page: this.state.page-1, loading:false});
+        this.updateNews(this.state.page-1);
+        this.setState({page: this.state.page-1});
     }
     onNextBtnClick = async () => {
-        console.log('next');
-        // if(this.state.page+1 <= Math.ceil(this.state.totalResults/this.props.pageSize)) {
-            let url = `https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=${this.props.category}&apiKey=5a267e71ace440edbbaeb258a28fdee2&page=${this.state.page+1}&pageSize=${this.props.pageSize}`;
-            this.setState({loading:true});
-            let data = await fetch(url);
-            let parsedData = await data.json();
-            console.log(parsedData);
-            this.setState({articles: parsedData.articles, totalResults: parsedData.totalResults, page: this.state.page+1, loading:false});
-        // }
+        this.updateNews(this.state.page+1);
+        this.setState({page: this.state.page+1});
     }
 
     render() {
