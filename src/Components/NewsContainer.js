@@ -6,7 +6,7 @@ import PropTypes from 'prop-types'
 export class NewsContainer extends Component {
 
     static defaultProps = {
-        pageSize: 18,
+        pageSize: 15,
         country: "in",
         category: "general"
     }
@@ -25,8 +25,15 @@ export class NewsContainer extends Component {
             page: 1
         }
     }
+    capitalizeFirstLetter = (string) => {
+        return string.charAt(0).toUpperCase() + string.slice(1);
+    }
 
     async updateNews(pageNo) {
+        if(window.location.pathname!=='/') {
+            document.title = `News Astra - ${this.capitalizeFirstLetter(this.props.category)}`
+        }
+
         let url = `https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=${this.props.category}&apiKey=5a267e71ace440edbbaeb258a28fdee2&page=${pageNo}&pageSize=${this.props.pageSize}`;
         this.setState({loading:true});
         let data = await fetch(url);
@@ -51,12 +58,12 @@ export class NewsContainer extends Component {
     render() {
         return (
             <div className='container' style={{width:"90%"}}>
-            <h3 className="my-3 text-center">Today's News Astras</h3>
+            <h3 className="my-3 text-center">Today's News Astras - Top {this.capitalizeFirstLetter(this.props.category)} Headings</h3>
             {this.state.loading && <Spinner />}
             {!this.state.loading && <div className="row">
                 {this.state.articles.map((element)=>{
                     return <div className="col-md-4 my-2" key={element.url}>
-                    <NewsItem title={element.title?element.title.slice(0,44):""} description={element.description?element.description.slice(0,65):""} imageUrl={element.urlToImage} newsUrl={element.url} author={element.author} publishedAt={element.publishedAt} sourceName={element.source.name} />
+                    <NewsItem title={element.title} description={element.description?element.description.slice(0,65):""} imageUrl={element.urlToImage} newsUrl={element.url} author={element.author} publishedAt={element.publishedAt} sourceName={element.source.name} />
                     </div>
                 })}
             </div>}
