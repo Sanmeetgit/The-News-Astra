@@ -39,10 +39,10 @@ export class NewsContainer extends Component {
 
         let url = `https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=${this.props.category}&apiKey=5a267e71ace440edbbaeb258a28fdee2&page=${pageNo}&pageSize=${this.props.pageSize}`;
         this.setState({ loading: true });
-        this.setState({progress:30})
+        this.setState({ progress: 30 })
         let data = await fetch(url);
         let parsedData = await data.json();
-        this.setState({progress:100})
+        this.setState({ progress: 100 })
         console.log(parsedData);
         this.setState({ articles: parsedData.articles, totalResults: parsedData.totalResults, loading: false });
     }
@@ -62,11 +62,11 @@ export class NewsContainer extends Component {
 
     render() {
         return (
-            <div className='container' style={{ width: "90%" }}>
+            <div className='container'>
                 <LoadingBar
                     color='#f11946'
                     progress={this.state.progress}
-                    onLoaderFinished={() => this.setState({progress:0})}
+                    onLoaderFinished={() => this.setState({ progress: 0 })}
                 />
                 <h3 className="my-3 text-center">Today's News Astras - Top {this.capitalizeFirstLetter(this.props.category)} Headings</h3>
                 {this.state.loading && <Spinner />}
@@ -76,7 +76,10 @@ export class NewsContainer extends Component {
                     hasMore={this.state.articles.length !== this.state.totalResults}
                     loader={<Spinner />}>
                     <div className="container">
-                        <div className="row">
+                        <div className="row" style={{
+                            width:window.innerWidth<500?"100%":"90%",
+                            margin: "0px auto"
+                        }}>
                             {this.state.articles.map((element) => {
                                 return <div className="col-md-4 my-2" key={element.url}>
                                     <NewsItem title={element.title} description={element.description ? element.description.slice(0, 65) : ""} imageUrl={element.urlToImage} newsUrl={element.url} author={element.author} publishedAt={element.publishedAt} sourceName={element.source.name} />
@@ -90,4 +93,4 @@ export class NewsContainer extends Component {
     }
 }
 
-export default NewsContainer
+export default NewsContainer;
