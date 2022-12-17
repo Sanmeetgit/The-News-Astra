@@ -37,7 +37,7 @@ export class NewsContainer extends Component {
             document.title = `News Astra - ${this.capitalizeFirstLetter(this.props.category)}`
         }
 
-        let url = `https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=${this.props.category}&apiKey=5a267e71ace440edbbaeb258a28fdee2&page=${pageNo}&pageSize=${this.props.pageSize}`;
+        let url = `https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=${this.props.category}&apiKey=${this.props.apiKey}&page=${pageNo}&pageSize=${this.props.pageSize}`;
         this.setState({ loading: true });
         this.setState({ progress: 30 })
         let data = await fetch(url);
@@ -52,7 +52,7 @@ export class NewsContainer extends Component {
         this.updateNews(this.state.page);
     }
     fetchMoreData = async () => {
-        let url = `https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=${this.props.category}&apiKey=5a267e71ace440edbbaeb258a28fdee2&page=${this.state.page + 1}&pageSize=${this.props.pageSize}`;
+        let url = `https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=${this.props.category}&apiKey=${this.props.apiKey}&page=${this.state.page + 1}&pageSize=${this.props.pageSize}`;
         // this.setState({ loading: true });
         let data = await fetch(url);
         let parsedData = await data.json();
@@ -77,7 +77,7 @@ export class NewsContainer extends Component {
                     loader={<Spinner />}>
                     <div className="container">
                         <div className="row" style={{
-                            width:window.innerWidth<500?"100%":"90%",
+                            width:"95%",
                             margin: "0px auto"
                         }}>
                             {this.state.articles.map((element) => {
