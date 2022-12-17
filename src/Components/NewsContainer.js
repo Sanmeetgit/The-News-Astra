@@ -12,16 +12,13 @@ const NewsContainer = (props) => {
     const [page, setPage] = useState(1);
     const [totalResults, setTotalResults] = useState(0);
     const [progress, setProgress] = useState(0);
+    const [showTopBtn, setShowTopBtn] = useState(false);
 
     const capitalizeFirstLetter = (string) => {
         return string.charAt(0).toUpperCase() + string.slice(1);
     }
 
     const updateNews = async (pageNo) => {
-        if (window.location.pathname !== '/') {
-            document.title = `News Astra - ${capitalizeFirstLetter(props.category)}`
-        }
-
         let url = `https://newsapi.org/v2/top-headlines?country=${props.country}&category=${props.category}&apiKey=${props.apiKey}&page=${pageNo}&pageSize=${props.pageSize}`;
         setLoading(true);
         setProgress(30);
@@ -35,6 +32,16 @@ const NewsContainer = (props) => {
     }
 
     useEffect(() => {
+        if (window.location.pathname !== '/') {
+            document.title = `News Astra - ${capitalizeFirstLetter(props.category)}`
+        }
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 30) {
+                setShowTopBtn(true);
+            } else {
+                setShowTopBtn(false);
+            }
+        });
         updateNews(page);
     }, [])  // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -49,8 +56,13 @@ const NewsContainer = (props) => {
         setPage(page + 1);
     }
 
+    const goToTop = () => {
+        document.body.scrollTop = 0;
+        document.documentElement.scrollTop = 0;
+    }
+
     return (
-        <div className='container' style={{ width: "100%" }}>
+        <div className='container' style={{ width: "95%" }}>
             <LoadingBar
                 color='#f11946'
                 progress={progress}
@@ -72,6 +84,7 @@ const NewsContainer = (props) => {
                         })}
                     </div>
                 </div>
+                {showTopBtn && <button onClick={goToTop} className="btn btn-danger btn-floating btn-lg" style={{ position: "fixed", bottom: "20px", right: "20px", display: "block", fontSize: "30px", borderRadius: "50px", padding: "0px", height: "50px", width: "50px" }} title="Go to top">&uarr;</button>}
             </InfiniteScroll>
         </div>
     );
