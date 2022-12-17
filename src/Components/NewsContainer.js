@@ -3,6 +3,7 @@ import NewsItem from './NewsItem'
 import Spinner from './Spinner';
 import PropTypes from 'prop-types'
 import InfiniteScroll from "react-infinite-scroll-component";
+import LoadingBar from 'react-top-loading-bar';
 
 export class NewsContainer extends Component {
 
@@ -19,12 +20,12 @@ export class NewsContainer extends Component {
 
     constructor() {
         super();
-        console.log("in cons");
         this.state = {
             articles: [],
             loading: false,
             page: 1,
-            totalResults: 0
+            totalResults: 0,
+            progress: 0
         }
     }
     capitalizeFirstLetter = (string) => {
@@ -38,8 +39,10 @@ export class NewsContainer extends Component {
 
         let url = `https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=${this.props.category}&apiKey=5a267e71ace440edbbaeb258a28fdee2&page=${pageNo}&pageSize=${this.props.pageSize}`;
         this.setState({ loading: true });
+        this.setState({progress:30})
         let data = await fetch(url);
         let parsedData = await data.json();
+        this.setState({progress:100})
         console.log(parsedData);
         this.setState({ articles: parsedData.articles, totalResults: parsedData.totalResults, loading: false });
     }
@@ -60,6 +63,11 @@ export class NewsContainer extends Component {
     render() {
         return (
             <div className='container' style={{ width: "90%" }}>
+                <LoadingBar
+                    color='#f11946'
+                    progress={this.state.progress}
+                    onLoaderFinished={() => this.setState({progress:0})}
+                />
                 <h3 className="my-3 text-center">Today's News Astras - Top {this.capitalizeFirstLetter(this.props.category)} Headings</h3>
                 {this.state.loading && <Spinner />}
                 <InfiniteScroll
